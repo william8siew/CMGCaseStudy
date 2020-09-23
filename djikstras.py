@@ -78,7 +78,7 @@ def getPath(node,prevNodeList,cities,capacities,graph):
         capacities[path[i]][path[i+1]] = capacities[path[i]][path[i+1]] - minC
         if capacities[path[i]][path[i+1]] == 0:
             graph[path[i]][path[i+1]] = 0
-    return "Optimal Path: "+string+" with lowest capacity possible " + str(minC)+"\n New Capacities:\n"+str(DataFrame(capacities))+"\n New Graph Weights:\n"+str(DataFrame(graph))
+    return "Optimal Path: "+string+" with max capacity " + str(minC)+"\n New Capacities:\n"+str(DataFrame(capacities))+"\n New Graph Weights:\n"+str(DataFrame(graph))
 """
 Pseudocode:
 1) Run Djikstras on graph where weights are cost per container
@@ -90,17 +90,52 @@ Note: we will start with the optimal path from Seoul to New York because it requ
 """
 
 needed_containers = 38
-needed_seattle_containers = int(needed_containers * 3/7)
-needed_ny_containers = int(needed_containers * 4 / 7)
+#needed_seattle_containers = int(needed_containers * 3/7)
+#needed_ny_containers = int(needed_containers * 4 / 7)
 # 12 cities, start node = Seoul[0], end nodes = New York[7] and Seattle[4] such that Seattle:New York is 3:4
 nodes = ['Seoul','Osaka','Shanghai','Taipei','Seattle','Shanghai','San Francisco','New York','Beijing','LA','KC','Baltimore']
 g = Graph(12) 
 edges = [('Seoul','Osaka',50,1100),('Seoul','Shanghai',70,900),('Seoul','Taipei',30,1000),('Osaka','Seattle',50,2400),('Shanghai','Seattle',30,2000),
             ('Shanghai','San Francisco',40,800),('Taipei','San Francisco',30,2000),('Seattle','New York',80,800),('San Francisco','New York',70,900),
-            ('Beijing','Shanghai',20,1000),('Shanghai','LA',60,2000),('LA','KC',40,600),('LA','Seattle',30,600),('Seattle','Baltimore',40,1000),
+            ('Beijing','Shanghai',20,1000),('Beijing','LA',60,2000),('LA','KC',40,600),('LA','Seattle',30,600),('Seattle','Baltimore',40,1000),
             ('KC','Baltimore',20,600),('KC','New York',10000,900),('Baltimore','New York',10000,500)]
 capacities = [[0 for column in range(12)]  
                     for row in range(12)] 
+for start,end,cap,price in edges:
+    i = nodes.index(start)
+    j = nodes.index(end)
+    g.graph[i][j] = price
+    capacities[i][j] = cap
+"""
+# Top routes when including JMG routes
+print(DataFrame(g.graph))
+print(DataFrame(capacities))
+g.dijkstra(0)
+print(getPath(7,g.prev_vertex,nodes,capacities,g.graph))
+#g.dijkstra(0)
+#print(getPath(4,g.prev_vertex,nodes,capacities,g.graph))
+g.dijkstra(8)
+print(getPath(7,g.prev_vertex,nodes,capacities,g.graph))
+g.dijkstra(8)
+print(getPath(7,g.prev_vertex,nodes,capacities,g.graph))
+g.dijkstra(0)
+print(getPath(7,g.prev_vertex,nodes,capacities,g.graph))
+g.dijkstra(0)
+print(getPath(7,g.prev_vertex,nodes,capacities,g.graph))
+g.dijkstra(0)
+print(getPath(7,g.prev_vertex,nodes,capacities,g.graph))
+g.dijkstra(0)
+print(getPath(7,g.prev_vertex,nodes,capacities,g.graph))
+"""
+
+
+# Top routes when not including JMG routes
+nodes = ['Seoul','Osaka','Shanghai','Taipei','Seattle','Shanghai','San Francisco','New York']
+g = Graph(8) 
+edges = [('Seoul','Osaka',50,1100),('Seoul','Shanghai',70,900),('Seoul','Taipei',30,1000),('Osaka','Seattle',50,2400),('Shanghai','Seattle',30,2000),
+            ('Shanghai','San Francisco',40,800),('Taipei','San Francisco',30,2000),('Seattle','New York',80,800),('San Francisco','New York',70,900)]
+capacities = [[0 for column in range(8)]  
+                    for row in range(8)] 
 for start,end,cap,price in edges:
     i = nodes.index(start)
     j = nodes.index(end)
@@ -111,7 +146,33 @@ print(DataFrame(capacities))
 g.dijkstra(0)
 print(getPath(7,g.prev_vertex,nodes,capacities,g.graph))
 g.dijkstra(0)
-print(getPath(4,g.prev_vertex,nodes,capacities,g.graph))
+print(getPath(7,g.prev_vertex,nodes,capacities,g.graph))
+g.dijkstra(0)
+print(getPath(7,g.prev_vertex,nodes,capacities,g.graph))
+g.dijkstra(0)
+print(getPath(7,g.prev_vertex,nodes,capacities,g.graph))
 
 
 
+# When using Beijing as a production plant, the only route to NY conflicts with the optimal Seoul route and is more expensive.
+"""
+nodes = ['Seoul','Osaka','Shanghai','Taipei','Seattle','Shanghai','San Francisco','New York','Beijing','LA','KC','Baltimore']
+    g = Graph(12) 
+    capacities = [[0 for column in range(12)]  
+                        for row in range(12)] 
+    for start,end,cap,price in edges:
+        i = nodes.index(start)
+        j = nodes.index(end)
+        g.graph[i][j] = price
+        capacities[i][j] = cap
+
+    # Top 3 routes when including JMG routes
+    print(DataFrame(g.graph))
+    print(DataFrame(capacities))
+    g.dijkstra(0)
+    print(getPath(7,g.prev_vertex,nodes,capacities,g.graph))
+    #g.dijkstra(0)
+    #print(getPath(4,g.prev_vertex,nodes,capacities,g.graph))
+    g.dijkstra(8)
+    print(getPath(7,g.prev_vertex,nodes,capacities,g.graph))
+"""
